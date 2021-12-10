@@ -1,0 +1,263 @@
+\documentclass[fontsize=14pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{esvect}
+\usepackage{xcolor}
+\usepackage{ulem}
+
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand {\DS} [1] {${\displaystyle #1}$}
+\DeclareMathOperator{\arcsec}{arcsec}
+\DeclareMathOperator{\arccot}{arccot}
+\DeclareMathOperator{\arccsc}{arccsc}
+\def\code#1{\texttt{#1}}
+
+\newenvironment{sysmatrix}[1]
+ {\left(\begin{array}{@{}#1@{}}}
+ {\end{array}\right)}
+\newcommand{\ro}[1]{%
+  \xrightarrow{\mathmakebox[\rowidth]{#1}}%
+}
+\newlength{\rowidth}% row operation width
+\AtBeginDocument{\setlength{\rowidth}{3em}}
+
+
+\title{\vspace{-1.5cm} Design Document: AutoDirect \vspace{-0.5cm}}
+\date{\today}
+
+\begin{document}
+
+\large
+
+\maketitle
+
+\subsubsection*{\large Today, Senso.ai announces AutoDirect, a disruptive new web application that enables banks to directly extend loans to consumers looking to buy a car.}
+
+AutoDirect is an all-in-one solution that allows buyers to quickly find their perfect car and get instantly preapproved for an auto loan. Based on buyers' financial information, AutoDirect recommends car options that buyers can afford with a preapproved loan, all before they set foot into a dealership, which allows buyers to shop and compare cars with financing in mind. AutoDirect also allows buyers to incorporate any changes made at the dealership directly into the web application.
+
+\subsubsection*{\large Customer Problem}
+
+Banks face three major problems in auto lending:
+\begin{itemize}
+    \item Buyers do not typically apply for auto loans directly through banks, as the borrowing experience is decoupled from the purchasing process. 
+    
+    \item Dealerships often persuade the buyer to incorporate add-ons and even change the car they were planning to finance, which invalidates any previous preapproved loan made with the bank.
+    
+    % That is, customers have the hassle of discussing with their bank while also having to figure out which cars match with their preapproved loan.
+    \item Unnecessary costs are incurred to incentivize dealerships for loan referrals.
+\end{itemize}
+
+
+%\sout{In the past, customers had two options when it came to auto-financing: they could finance through the dealership or through the bank. If they are financing through the dealership,}
+%\begin{itemize}
+%    \item salespeople could often convince customers to include a number of unnecessary add-ons to their purchase,
+ %   \item a markup may be applied to the customers loan, and
+ %   \item banks are required to spend unnecessary resources dealing with the dealership.
+%\end{itemize}
+
+%\sout{If financing through the bank (whether online or in-person), customers experience a decoupling between the car and the financials. That is, customers have to hassle through discussions with their bank while also having to figure out which cars match with their preapproved loan. This creates unnecessary stress on the customers and \textcolor{red}{disincentives them from dealing directly with the bank}.}
+
+\subsubsection*{\large Solution}
+
+The new AutoDirect product from Senso.ai enables buyers to easily view an assortment of cars with preapproved financing, customized for their individual financial profiles. Buyers are empowered to choose among affordable cars, and to compare cars with financing in mind. AutoDirect allows banks to provide these services to their clients, creating a win-win situation between buyers and their banks.
+
+\smallskip
+
+\noindent
+AutoDirect facilitates a direct lending process for banks looking to lend to prospective car buyers. It removes the need for paying rebates to dealerships. The preapproval process is automated, which saves time and hassle in the lending process. Buyers can also adjust their loan parameters (i.e., add-ons or discounts) if changes are made at the dealership, which allows banks to get ahead of any changes in the field. 
+
+% \begin{enumerate}
+%     \item[1.] ...
+    
+%     \item[2.] Buyers do not have to engage with dealerships for financing. They simply choose the car that works best for them, then instantly receive a loan offer from their bank. Afterwards, buyers walk into the dealership, focus on the important things (like test driving), and easily update their loan parameters.
+% \end{enumerate}
+
+\subsubsection*{\large What do buyers need to do?}
+
+It's easy! Just go to {\color{blue} \href{https://autodirect.tech}{https://autodirect.tech}}, fill in some financial information, and get immediate access to hundreds of cars for which they are already preapproved. Choose a model and be on your way to your new car!
+
+% To discuss in presentation:
+% Who are we marketing the press release towards? Its hard to disentangle the customers from the banks.
+% Discovery trade in, test drive?
+
+% Two things about counteroffer idea:
+% 1. User can cheat, maybe there's somehow to validate?
+% 3. This is good for cross-bank competition though
+% 4. We need to know what bank it, so it needs be validated. Basically, this is only gonna work if its validated.
+% 5. How to deal with same bank offers (probably AutoDirect since the bank doesn't want to deal with dealership?, assume they pay less for AutoDirect than dealership, so the online offer must be lower, right?)
+
+\section*{SOLID Principles} 
+
+\subsubsection*{1. Single Responsibility Principle}
+
+Every class in our project has a single responsibility, which means they manage a single functionality in our program. For example, we have a class \texttt{SvcUserLogin}, that is responsible for user login. In this class, we can get user information, or create a new user account. And another class \texttt{SensoAPI}, is used to get the loan offer. Additionally, we have separate classes for each database, searching, etc. Each of the \code{TableOffers}, \code{TableCars}, \code{TableUsers} classes are responsible for accessing only one table in our database, this is another example of the Single Responsibility Principle.
+
+\subsubsection*{2. Dependency Inversion Principle}
+
+We introduced an abstraction layer (using dependency injection) between high-level and low-level classes in order to avoid having dependency between each type of class. As a result, we adhere to CLEAN architecture and also decrease the reliance of our classes on one another. We mainly use this principle by creating interfaces to allow Application Business Rules to call methods from our Frameworks and Drivers classes.
+
+\subsubsection*{3. Interface Segregation Principle} 
+We are following the Interface Segregation Principle because a gateway class implementing one of our interfaces only needs to talk to one table in the database, it does not need to interact with other classes.
+
+\subsubsection*{4.Liskov Substitution Principle}
+Inheritance is not something heavily implemented in our code,however; we do use it in the databases between Table and TableCars, TableOffers, TableUsers in the methods \texttt{resultSetToList}. This method does not change from the parent class to the children class which means that it follows Liskov Substitution Principle. 
+ 
+\subsubsection*{5. Flaws in our code}
+
+Early on, we realised that our code design did not follow CLEAN architecture because Frameworks and Drivers were interacting with Entities and Use Cases. We modified this by removing the dependency aspect and by using Dependency Injection between Use Case classes and Frameworks and Drivers classes (described below).
+ 
+\section*{Clean Architecture}
+
+In our project, we use all four layers of the clean architecture. Our entire Frontend repository is part of our Frameworks and Drivers layer and the following is the organization of our Backend repository packages w.r.t. clean architecture:
+\begin{itemize}
+    \item Enterprise Business Rules: \code{entities}
+    \item Application Business Rules: \code{services}, \code{utils}
+    \item Interface Adapters: \code{endpoints}
+    \item Frameworks and Drivers: \code{database}, \code{upstream}
+\end{itemize}
+
+The \code{entities} package contains classes such as \code{EntCar} and \code{EntUser}. These entities contain representation data and are used by classes in the \code{services} package to perform the program's application business logic. Furthermore, classes in the \code{services} package need to make use of classes in the \code{database} package (which contains classes that talk). As we are following clean architecture, we use interfaces and the dependency injection to manage the dependency of the \code{services} classes on the \code{database} classes.
+
+
+The \code{ApiEndpoints} class is the only class in the Interface Adapters layer of our architecture. Note that \code{ApiEndpoints} is both a presenter and a controller as it both receives and sends data to and from the frontend. This behaviour comes from the fact that we use Spring as our backend web framework, and this is how Spring manages communications with the frontend. \code{ApiEndpoints} class employs the facade design pattern and delegates all of its behaviour to classes in the \code{services} package (which also follows the clean architecture).
+
+
+Our main class; however, violates CLEAN architecture. Ideally, the main class would not be part of any layer, which is why it is allowed to pull different objects together. In our project, we use Spring which facilitates the use of endpoints, these act as controllers and presenters in the main class. This allows our Controller/Presenter to interact with Frameworks and Drivers. This is a violation, albeit an involuntary one, of CLEAN architecture.  
+
+\section*{Design Patterns}
+
+\subsubsection*{1. Dependency Injection}
+We are intensively using the Dependency Injection Design pattern. Our program relies heavily on interfaces, most of which are created in order to adhere to CLEAN Architecture. We use Dependency Injection to allow classes from a higher level to interact with classes in a lower level. We use the dependency injection to maintain the use of the dependency inversion principle, because they are heavily reliant on one another.
+
+\subsubsection*{2. Private Class Data}
+Another design pattern that we are using is the Private Class Data design pattern. The goal of this design pattern is to reduce exposure of attributes by making the variables private. We use this pattern in order to prevent the manipulation of certain parts of our program and keep things compartmentalized. This design pattern was not introduced in the scope of our course, however it is relevant to our coding structure. %%%TODO??
+
+\subsubsection*{3. Facade}
+We use the Facade design pattern in the main entry class of our backend, \code{ApiEndpoints}. \code{ApiEndpoints} delegates all operations to classes in the \code{services} package (which is a hallmark of the Facade design pattern). The only responsibility of the \code{ApiEndpoints} class is to send and recieve data to and from the frontend, This is done by the Spring web-framework (and so there is no code related to this inside the methods, only delegation).
+
+
+\section*{Use of Github Features}
+
+\subsubsection*{1. Github Projects and KANBAN Board}
+
+One of the Github features that we have been using is Github Projects. Specifically, the integrated KANBAN board. We use github issues as cards in the board and have found it very useful to assign issues to specific team members! The following are the lanes of our KANBAN board and how we use them:
+
+\bigskip
+\bigskip
+
+\begin{itemize}
+    \item TODO: Issues to be started.
+    \item In Progress: Issues currently being worked on.
+    \item Reviewing/Testing: Issues that are under reviewing or currently being tested.
+    \item Complete: Issues that have been completed.
+\end{itemize}
+
+\subsubsection*{2. Branches, Pull Requests, and Reviews}
+
+We are also using pull requests. Based on task assignments from the KANBAN Board, every member works on their parts. We've been creating new branches, to fix a bug or add new features. When an issue is completed, one member make a pull request, which will be reviewed and, usually, approved to merge into main by another member. Often, members will have specific comments on a pull request that their creator must address before it can be merged into the main code.
+
+\subsubsection*{3. Using Issues to Store Useful Resources}
+
+Another feature we've been taking advantage is using issues to share useful resources. We have two pinned "resources" issues, for the frontend and backend repositories, respectively. For frontend, we stored useful online tutorials for HTML, CSS and Javascript. And for backend, we have resources for spring framework, SQl basics, PostgreSQL, JDBC, and Java.
+
+\subsubsection*{4. Repository Organization}
+
+We use Github features to organise repositories. We have two repositories: "Frontend" and "Backend". This helps us organise our project in a meaningful manner.
+Our frontend is organised into 3 folders: "assets" for static assets like images and icons, "js" for JavaScript, and "css" for stylesheets.
+Our Backend is organised into a package for tests and for main. The main package contains the packages \code{database}, \code{entities}, \code{interfaces}, \code{services}, \code{upstream}, and \code{utils} as well as the class \code{ApiEndpoints.java}. This helps us differentiate classes according to their different functionalities. It also makes our code easy to read for those who need to check or use our code. 
+
+\subsubsection*{5. Github Pages}
+We are using Github pages for our frontend. Github pages is a deployment tool that supports the creating of websites. It functions as a host for the website and has allowed us to view changes and new updates.
+
+\section*{Code Style and Documentation}
+
+There are no substantial errors and warnings in the IDE. There are false-positive typo alerts, and SQL syntax warnings that require configuring the IDE to connect to the database server.
+
+Javadoc is used considerably throughout the project. There are still a few places that could use more documentation, and we intend to add more documentation going forward. We also intend to add class-level documentation as part of our next steps.
+
+We believe that a Java programmer can open any code file in our project and understand the code. We made every attempt to ensure the code is clear on its intentions and documented thoroughly. However, we are aware that there is room for improvement in our documentation.
+
+\section*{Tech Choices} 
+\subsubsection*{Backend}
+Java seemed like an appropriate programming language for us to use. We all have a strong desire to learn the language and it is useful for object-oriented projects.
+
+We chose Spring.io as our backend web framework because it provides rapid API development functionality with a simple annotation-based syntax, which is superior to other frameworks or to writing the API features from scratch. We also chose DigitalOcean as our cloud provider because they grant each person a \$100 credit for 12 months, and it provides a simple VPS solution for our database and API hosting needs.
+
+Next, we use a relational SQL database because the structure of our data is naturally tabular, which is suited for a SQL database. We chose PostgreSQL specifically because it is a popular and mature open-source SQL database solution, and it also has good full-text search capability, should we decide to implement that feature.
+
+\subsubsection*{Frontend}
+We chose to implement our frontend as a web interface because of the ease of development and cross-platform compatibility. 
+
+We are using HTML, CSS, and plain JavaScript at this time because our frontend is a fairly simple two-page static website, which means that it does not warrant the use of a large framework, as this will introduce additional complexity. 
+
+\section*{Testing}
+We have a lane which is specific to testing in our Github KANBAN board (``Reviewing/Testing''). We implemented multiple unit tests. Our testing was mainly focused on the services, upstream and database methods. This is to test the functionality of each of our methods and to make sure that they are working properly. Most methods were tested in a multitude of ways in order to test them thoroughly.
+
+\noindent
+We use unit tests to verify the functionality of our code and to find errors and bugs early on. We have separate tests for database, services and upstream. For instance, when testing TableOffers, we implement test functions to check whether we could successfully set users, add offers, mark offers, remove offers, etc.
+
+We implemented multiple unit tests. Our testing was mainly focused on the services, upstream and database methods. This is to test the functionality of each of our methods and to make sure that they are working properly. Most methods were tested in a multitude of ways in order to test them thoroughly.
+
+\noindent
+We are using a "peer review" method, this means that before accepting a PR, reviewers pull the branch and test the added functionality on their machine. This enables our code to be reviewed by more than one person and decreases chances for errors.
+
+\section*{Refactoring}
+
+In the past week, we have spent much time discussing how we can refactor our code in order to adhere to the CLEAN architecture. This multi-session discussion was the biggest refactoring step that our group has partaken in thus far. The results of this refactoring step can be seen in the Backend repo PR ``Reorganized codebase to match with our updated CRC card design which …". We have also intermittently refactored our code throughout the semester.  
+
+\section*{Code Organization}
+
+Our code is organized into packages and classes based on major functionalities. Further, classes are grouped semantically, which makes the code easy to navigate. At the root level, there are the \texttt{main} and \texttt{test} folders, customarily representing functional code and testing code. Within the \texttt{tech.autodirect.api} folder under \texttt{main}, we have an entry point class \texttt{ApiEndpoints}, which is an annotated Spring REST application class, that serves our API endpoints via Spring. Our packages are organized as follows:
+\begin{itemize}
+    \item The \texttt{upstream} folder contains classes that access upstream APIs.
+    
+    \item The \texttt{services} package contains classes that perform the major functionalities exposed by our API endpoints.
+    
+    \item The \texttt{utils} package contains project-level utilities.
+    
+    \item The \texttt{database} package contains classes that enable interaction with the database.
+    
+    \item The \texttt{entities} package contains project entities, which are mainly data classes that represent different data.
+    
+    \item The \texttt{interfaces} package contains interface definitions that enable dependency injection for upper level code to interact with lower-level code.
+\end{itemize}
+
+\section*{Functionality}
+
+The program loads and stores state. This means that when the URL of our website is copied, it saves the state the website is in. That increases user accessibility because it allows the user to transfer between devices and not lose the progress made so far in the website. We use a PostgreSQL database server to store and load information that needs to persist across time.  
+%Specifically, when a search query is made, we store a user's chosen filters in the database server and load this information upon the next login. 
+%We store which loan offers the user is interested in (a sort of 'loan offer cart') and this 'cart' is stored and loaded each time the user logs in (it persists). 
+The details of these examples of such behaviours are as follows:   
+\begin{itemize}
+    \item We have a \texttt{cars} table and a \texttt{users} table that are initialized once during deployment, by the \texttt{InitDatabase} class. They store our car collection and user information respectively. 
+    \item We have an \texttt{offers} table for each active user, created dynamically by the \texttt{TableOffers} class, that contains loan offers based on the user's financial information. Each offers rows has a \texttt{claimed} field that supports a "cart" functionality, which allows users to claim offers they are interested in.
+    \item Each row of the \texttt{users} table also refers to an \texttt{offers} table corresponding to that user.
+    % \item When a user logs in to our system, we load their previous search filter settings and selected offers from the corresponding row in the \texttt{users} table and the \texttt{offers} table corresponding to the user.
+    %\item When a user makes a search query, we update the filter settings in their row of the \texttt{users} table. When the user adds a loan offer 'to cart', we add this offer to the user's \texttt{offers} table.
+    \item The program accesses data via classes under the \texttt{database} package, using interfaces for dependency injection to adhere to CLEAN architecture.
+    \item The program aims to provide possible preapproved loans based on the user's credit score and Senso rate API.
+\end{itemize}
+
+
+
+
+\section*{Summary}
+We have finished implementing our project; however, we had to remove some features that we wanted to implement due to time constraints. We do not filter using car specifications, but we do filter using monthly budget and down payment.
+
+\end{document}
