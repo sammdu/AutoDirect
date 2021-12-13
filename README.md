@@ -12,6 +12,5 @@ Documentation and relevant information related to the project.
   * Hosted on DigitalOcean.
 
 ## Files of interest:
-* Project [Design Document (Dec. 10)](https://github.com/TLI-Group-1/Documentation/blob/main/DesignDocument/tli_autodirect_design_document_20211210.pdf)
+* Project [Design Document (Dec. 12)](https://github.com/TLI-Group-1/Documentation/blob/main/DesignDocument/tli_autodirect_design_document_20211212.pdf)
 * [Final Presentation](https://github.com/TLI-Group-1/Documentation/blob/main/TLI_G1_Final_Presentation.pdf)
-* [Accessibility Report](https://github.com/TLI-Group-1/Documentation/blob/main/accessibility.md)
