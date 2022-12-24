@@ -1,6 +1,6 @@
 # AutoDirect: shop cars that you can afford with recommended financing options!
 
-A full-stack web app that allows buyers to shop cars they can aord along with pre-approved loans. It automatically fetches their credit score, and accepts budget seings.
+A full-stack web app that allows buyers to shop cars they can afford along with pre-approved loans. It automatically fetches their credit score, and accepts budget settings.
 
 <p align="center">
 <img width="600px" style="margin: 0 auto;" align="center" src="https://user-images.githubusercontent.com/10665890/209449635-147f25cb-ed7f-4261-b367-fef39178c748.png" />
